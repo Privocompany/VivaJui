@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- saved from url=(0168)https://guday.com.br/web-pixels@7c8c5e2bw53b42974p3bbc26b0m99f6ce5d/custom/web-pixel-115966261@6/sandbox/modern/?utm_source=ig&utm_medium=social&utm_content=link_in_bio -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Guday Gummies • Manu Cit</title>
+    <script src="./s7c8c5e2bw53b42974p3bbc26b0m99f6ce5dm.js.download"></script>
+
+    <script type="text/javascript">
+  (function(shopify) {shopify.extend('WebPixel::Render', function(api) {
+var analytics=api.analytics,browser=api.browser,init=api.init;
+const script = document.createElement('script');
+let g__ads_id = "AW-16678782349";
+let g__ads_label = "Y4TLCMLt59oZEI2LiJE";
+let send_to = '${g__ads_id}/${g__ads_label}';
+script.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=' + g__ads_id );
+script.setAttribute('async', '');
+document.head.appendChild(script);
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', g__ads_id, {
+  'allow_enhanced_conversions' : true
+});
+window.enhanced_conversion_data =enhanced_conversion_data || {}; 
+analytics.subscribe("checkout_completed", (event) => {
+window.enhanced_conversion_data = {
+    'email' : event.data.checkout.email,
+    'phone_number' : event.data.checkout.phone,
+    'address' : {
+      'first_name' : event.data.checkout.shippingAddress.firstName,
+      'last_name' : event.data.checkout.shippingAddress.lastName,
+      'street' : event.data.checkout.shippingAddress.address1,
+      'city' : event.data.checkout.shippingAddress.city,
+      'region' : event.data.checkout.shippingAddress.province,
+      'postal_code' : event.data.checkout.shippingAddress.zip,
+      'country' : event.data.checkout.shippingAddress.country
+    }
+  }
+  gtag('set', 'user_data', enhanced_conversion_data);
+  gtag('event', 'conversion', {
+    'send_to' : send_to,
+    'value' : event.data.checkout.subtotalPrice.amount,
+    'currency' :event.data.checkout.subtotalPrice.currencyCode,
+    'transaction_id' : event.data.checkout.order.id
+  });
+});
+});})(self.webPixelsManager.createShopifyExtend('115966261', 'custom'));
+
+</script>
+
+  <script src="./js" async=""></script><script type="text/javascript" async="" src="./f.txt"></script><script type="text/javascript" async="" src="./f(1).txt"></script></head>
+  <body>
+
+</body></html>

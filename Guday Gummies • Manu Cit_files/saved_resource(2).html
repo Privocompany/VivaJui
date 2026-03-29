@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- saved from url=(0168)https://guday.com.br/web-pixels@7c8c5e2bw53b42974p3bbc26b0m99f6ce5d/custom/web-pixel-116556085@5/sandbox/modern/?utm_source=ig&utm_medium=social&utm_content=link_in_bio -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Guday Gummies • Manu Cit</title>
+    <script src="./s7c8c5e2bw53b42974p3bbc26b0m99f6ce5dm.js.download"></script>
+
+    <script type="text/javascript">
+  (function(shopify) {shopify.extend('WebPixel::Render', function(api) {
+var analytics=api.analytics,browser=api.browser,init=api.init;
+function loadGoogleAdsScript() {
+    const script = document.createElement('script');
+    let g__ads_id = "AW-16678782349";
+    let g__ads_label = "Y4TLCMLt59oZEI2LiJE";
+    let send_to = `${g__ads_id}/${g__ads_label}`;
+    script.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=' + g__ads_id);
+    script.setAttribute('async', '');
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', g__ads_id, {
+        'allow_enhanced_conversions': true
+    });
+
+    return { gtag, send_to };
+}
+
+function storeCheckoutData(event) {
+    if (!event || !event.data || !event.data.checkout) {
+        return;
+    }
+
+    const checkoutData = {
+        email: event.data.checkout.email,
+        phone_number: event.data.checkout.phone,
+        first_name: event.data.checkout.shippingAddress.firstName,
+        last_name: event.data.checkout.shippingAddress.lastName,
+        street: event.data.checkout.shippingAddress.address1,
+        city: event.data.checkout.shippingAddress.city,
+        region: event.data.checkout.shippingAddress.province,
+        postal_code: event.data.checkout.shippingAddress.zip,
+        country: event.data.checkout.shippingAddress.country,
+        subtotal_price: event.data.checkout.subtotalPrice.amount,
+        currency: event.data.checkout.subtotalPrice.currencyCode,
+        transaction_id: event.data.checkout.order.id
+    };
+
+    localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+}
+
+function setupPostPurchaseTracking() {
+    const { gtag, send_to } = loadGoogleAdsScript();
+    const storedCheckoutData = localStorage.getItem('checkoutData');
+    if (!storedCheckoutData) {
+        return;
+    }
+
+    const checkoutData = JSON.parse(storedCheckoutData);
+
+    window.enhanced_conversion_data = {
+        email: checkoutData.email,
+        phone_number: checkoutData.phone_number,
+        address: {
+            first_name: checkoutData.first_name,
+            last_name: checkoutData.last_name,
+            street: checkoutData.street,
+            city: checkoutData.city,
+            region: checkoutData.region,
+            postal_code: checkoutData.postal_code,
+            country: checkoutData.country
+        }
+    };
+
+    gtag('set', 'user_data', window.enhanced_conversion_data);
+
+    gtag('event', 'conversion', {
+        'send_to': send_to,
+        'value': checkoutData.subtotal_price,
+        'currency': checkoutData.currency,
+        'transaction_id': checkoutData.transaction_id
+    });
+
+    localStorage.removeItem('checkoutData');
+}
+
+if (typeof analytics !== 'undefined' && analytics.subscribe) {
+    analytics.subscribe("checkout_completed", (event) => {
+        storeCheckoutData(event);
+    });
+}
+});})(self.webPixelsManager.createShopifyExtend('116556085', 'custom'));
+
+</script>
+
+  </head>
+  <body>
+
+</body></html>

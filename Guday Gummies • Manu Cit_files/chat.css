@@ -1,0 +1,21 @@
+.wpp-1 {
+  fill: #25d366;
+}
+
+.wpp-2,
+.wpp-5 {
+  fill: none;
+}
+
+.wpp-2 {
+  stroke: #fff;
+  stroke-width: 5px;
+}
+
+.wpp-3 {
+  fill: #fff;
+}
+
+.wpp-4 {
+  stroke: none;
+}

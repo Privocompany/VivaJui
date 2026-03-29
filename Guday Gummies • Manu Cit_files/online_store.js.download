@@ -1,0 +1,125 @@
+(function() {
+  function processOrder(inputs, callback) {
+    // Dados do evento
+    const trackingPrefix = "Cód. de Rastreamento:";
+    const orderNote = inputs.note;
+    const orderId = inputs.order_id;
+  
+    // Função para atualizar as informações de rastreamento do fulfillment
+    function updateFulfillmentTrackingInfo(orderId, trackingNumber, trackingUrl, trackingCompany) {
+      const mutation = `
+        mutation UpdateFulfillmentTrackingInfo($input: FulfillmentTrackingInput!) {
+          fulfillmentTrackingInfoUpdateV2(input: $input) {
+            fulfillment {
+              id
+              status
+              trackingInfo {
+                company
+                number
+                url
+              }
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+      const variables = {
+        input: {
+          fulfillmentId: orderId,
+          trackingInfo: [{
+            number: trackingNumber,
+            url: trackingUrl,
+            company: trackingCompany
+          }],
+          notifyCustomer: true
+        }
+      };
+  
+      return fetch('/admin/api/2023-01/graphql.json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: mutation, variables: variables })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Tracking info updated successfully:', data);
+        return data;
+      })
+      .catch(error => {
+        console.log('Error updating tracking info:', error);
+      });
+    }
+  
+    // Função para atualizar os atributos da nota do pedido
+    function updateOrderNoteAttributes(orderId, trackingNumber, trackingUrl) {
+      const mutation = `
+        mutation UpdateOrder($input: OrderInput!) {
+          orderUpdate(input: $input) {
+            order {
+              id
+              noteAttributes {
+                name
+                value
+              }
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `;
+      const variables = {
+        input: {
+          id: orderId,
+          noteAttributes: [
+            {
+              name: "Tracking Number",
+              value: trackingNumber
+            },
+            {
+              name: "Tracking URL",
+              value: trackingUrl
+            }
+          ]
+        }
+      };
+  
+      return fetch('/admin/api/2023-01/graphql.json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: mutation, variables: variables })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Order note attributes updated successfully:', data);
+        return data;
+      })
+      .catch(error => {
+        console.log('Error updating order note attributes:', error);
+      });
+    }
+  
+    if (orderNote && orderNote.includes(trackingPrefix)) {
+      const trackingNumber = orderNote.split(trackingPrefix).pop().trim();
+      const trackingUrl = `https://rastreae.com.br/resultado/${trackingNumber}`;
+      const trackingCompany = "Outro";
+  
+      updateFulfillmentTrackingInfo(orderId, trackingNumber, trackingUrl, trackingCompany).then(() => {
+        updateOrderNoteAttributes(orderId, trackingNumber, trackingUrl).then(() => {
+          callback(null, { message: 'Tracking info and note attributes updated successfully.' });
+        });
+      });
+    } else {
+      callback(null, { message: 'No tracking info found in the order note.' });
+    }
+  }
+
+})();

@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Jui — Seu intestino funcionando de verdade</title>
+<meta name="description" content="Jui combina Psyllium e Inulina para destravar seu intestino naturalmente, sem laxantes, sem cólicas, sem cansaço."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet"/>
+<style>
+/* ─── TOKENS REAIS — Jui (lp.vivajui.com.br) ───────────── */
+:root {
+  /* Cores primárias extraídas do site original */
+  --dark:      #1A1A1A;        /* Texto principal e fundos escuros */
+  --green:     #a9d900;        /* Verde-lima principal — marquee, botões */
+  --green-rgb: rgb(180,230,3); /* Variante RGB — player, play buttons */
+  --green-dark:#538500;        /* Verde escuro — hover, sombra */
+  --success:   #039855;        /* Checks, ícones de confirmação */
+  --gray:      #98A2B3;        /* Secundário, disabled */
+  --bg:        #ffffff;        /* Background branco limpo */
+  --bg-soft:   #f5fde8;        /* Verde-lima claríssimo — seções alternadas */
+  --rating:    #FFBA46;        /* Estrelas de avaliação */
+  --error:     #BE123C;        /* Erros */
+
+  /* Aliases para compatibilidade com as classes existentes */
+  --highlight: var(--green);          /* highlight = verde-lima */
+  --purple:    var(--green-dark);     /* purple = verde escuro */
+  --sale:      var(--green);          /* sale tags = verde-lima */
+  --beige:     var(--bg-soft);        /* beige = fundo esverdeado suave */
+
+  --anim-primary: .5s cubic-bezier(.3,1,.3,1);
+  --anim-smooth:  .7s cubic-bezier(.7,0,.3,1);
+  --anim-fast:    .3s cubic-bezier(.7,0,.3,1);
+
+  --rounded: 9999px;
+
+  --sp1:.25rem; --sp2:.5rem; --sp3:.75rem; --sp4:1rem;
+  --sp5:1.25rem; --sp6:1.5rem; --sp8:2rem; --sp10:2.5rem;
+  --sp12:3rem; --sp16:4rem; --sp20:5rem; --sp24:6rem;
+  --sp32:8rem;
+}
+
+/* ─── RESET ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--highlight);color:#fff}
+
+/* ─── UTILITÁRIOS ─────────────────────────────────────── */
+.container{max-width:1200px;margin:0 auto;padding-inline:clamp(1.25rem,4vw,3rem)}
+.pill{
+  display:inline-flex;align-items:center;gap:.35em;
+  padding:.35em 1em;border-radius:var(--rounded);
+  font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+}
+.pill-green { background:var(--sale); color:var(--dark); }
+.pill-purple{ background:var(--highlight); color:#fff; }
+.pill-beige { background:var(--beige); color:var(--dark); }
+
+/* animação de entrada */
+[data-reveal]{opacity:0;transform:translateY(2rem);transition:opacity .7s cubic-bezier(.3,1,.3,1), transform .7s cubic-bezier(.3,1,.3,1)}
+[data-reveal].visible{opacity:1;transform:translateY(0)}
+[data-reveal][data-delay="1"]{transition-delay:.1s}
+[data-reveal][data-delay="2"]{transition-delay:.2s}
+[data-reveal][data-delay="3"]{transition-delay:.3s}
+[data-reveal][data-delay="4"]{transition-delay:.4s}
+[data-reveal][data-delay="5"]{transition-delay:.5s}
+
+/* ─── NAVBAR ──────────────────────────────────────────── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:.9rem clamp(1.25rem,4vw,3rem);
+  display:flex;align-items:center;justify-content:space-between;
+  background:transparent;
+  border-bottom:1px solid transparent;
+  transition:background var(--anim-fast), border-color var(--anim-fast);
+}
+.nav.nav-solid{
+  background:rgba(255,255,255,.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(26,26,26,.08);
+}
+.nav-logo{font-size:1.5rem;font-weight:900;letter-spacing:-.04em;color:#fff;transition:color var(--anim-fast)}
+.nav-logo span{color:var(--green)}
+.nav.nav-solid .nav-logo{color:var(--dark)}
+.nav-cta{
+  padding:.6rem 1.5rem;border-radius:var(--rounded);
+  background:var(--green);color:var(--dark);
+  font-weight:700;font-size:.8125rem;letter-spacing:.04em;text-transform:uppercase;
+  transition:background var(--anim-fast), transform var(--anim-fast);
+}
+.nav-cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px)}
+
+/* ─── SCROLL EXPAND HERO ─────────────────────────────── */
+#sem-hero{
+  position:relative;
+  overflow:hidden;
+}
+.sem-lock{
+  position:sticky;top:0;
+  width:100%;height:100dvh;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+/* BG image */
+.sem-bg{
+  position:absolute;inset:0;z-index:0;
+  will-change:opacity;
+}
+.sem-bg img{
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  display:block;
+}
+.sem-bg::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(0,0,0,.35);
+}
+/* Expanding media box */
+.sem-media-wrap{
+  position:absolute;z-index:1;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  border-radius:1.25rem;overflow:hidden;
+  box-shadow:0 0 50px rgba(0,0,0,.3);
+  will-change:width,height;
+  transition:none;
+}
+.sem-media-wrap img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.sem-media-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.28);
+  pointer-events:none;
+  will-change:opacity;
+}
+/* Title split words */
+.sem-title{
+  position:absolute;z-index:2;
+  inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:.25rem;
+  pointer-events:none;
+  text-align:center;
+}
+.sem-word{
+  font-size:clamp(2.5rem,6vw,5rem);font-weight:900;
+  line-height:1;letter-spacing:-.04em;
+  color:#fff;
+  will-change:transform;
+  transition:none;
+  display:block;
+  text-shadow:0 2px 24px rgba(0,0,0,.3);
+}
+.sem-word em{font-style:normal;color:var(--green)}
+.sem-scroll-hint{
+  position:absolute;z-index:2;
+  bottom:2.5rem;left:50%;transform:translateX(-50%);
+  color:rgba(255,255,255,.7);font-size:.8125rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  will-change:opacity;
+  animation:bounce-hint 2s ease-in-out infinite;
+}
+.sem-scroll-hint svg{color:var(--green)}
+@keyframes bounce-hint{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(6px)}
+}
+/* After expand – normal content section */
+.sem-content{
+  will-change:opacity;
+}
+/* spacer that creates the scrollable area */
+.sem-spacer{height:300dvh}
+@media(max-width:768px){
+  .sem-word{font-size:clamp(2rem,9vw,3.5rem)}
+}
+
+.hero-label{margin-bottom:var(--sp5)}
+.hero h1{
+  font-size:clamp(2.5rem,5.5vw,4.25rem);
+  font-weight:900;line-height:1.02;letter-spacing:-.035em;
+  color:var(--dark);margin-bottom:var(--sp6); letter-spacing:-.04em;
+}
+.hero h1 em{font-style:normal;color:var(--highlight)}
+.hero-sub{
+  font-size:clamp(1rem,1.5vw,1.2rem);
+  color:rgba(26,26,26,.6);line-height:1.6;
+  max-width:42ch;margin-bottom:var(--sp10);
+}
+@media(max-width:768px){.hero-sub{margin-inline:auto}}
+
+.hero-actions{display:flex;gap:var(--sp4);flex-wrap:wrap;align-items:center}
+@media(max-width:768px){.hero-actions{justify-content:center}}
+
+.btn-primary{
+  padding:1rem 2rem;border-radius:var(--rounded);
+  background:var(--green);color:var(--dark);border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:900;font-size:.9375rem;
+  letter-spacing:.02em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.5rem;
+  position:relative;overflow:hidden;
+  transition:transform var(--anim-fast), box-shadow var(--anim-fast);
+}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:var(--green-dark);
+  transform:translateY(101%);transition:transform var(--anim-smooth);
+  border-radius:inherit;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(169,217,0,.4)}
+.btn-primary:hover::after{transform:translateY(0)}
+.btn-primary:hover span{color:#fff}
+.btn-primary span{position:relative;z-index:1}
+
+.btn-ghost{
+  padding:1rem 1.5rem;border-radius:var(--rounded);
+  background:transparent;color:var(--dark);border:1.5px solid rgba(26,26,26,.25);
+  font-weight:600;font-size:.875rem;cursor:pointer;
+  transition:border-color var(--anim-fast), background var(--anim-fast);
+  font-family:'Inter',sans-serif;
+}
+.btn-ghost:hover{border-color:var(--green);background:rgba(169,217,0,.07);color:var(--green-dark)}
+
+.hero-guarantee{
+  display:flex;align-items:center;gap:.5rem;
+  margin-top:var(--sp5);font-size:.8125rem;color:rgba(26,26,26,.5);
+}
+@media(max-width:768px){.hero-guarantee{justify-content:center}}
+.hero-guarantee svg{flex-shrink:0;color:var(--sale)}
+
+/* hero visual */
+.hero-visual{position:relative}
+.hero-img-wrap{
+  border-radius:2rem;overflow:hidden;
+  background:linear-gradient(145deg,var(--bg-soft),rgba(169,217,0,.1));
+  aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+/* floaters */
+.floater{
+  position:absolute;background:#fff;border-radius:1rem;
+  padding:.7rem 1rem;box-shadow:0 8px 32px rgba(26,26,26,.1);
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.8125rem;font-weight:600;white-space:nowrap;
+  animation:float 4s ease-in-out infinite;
+}
+.floater:nth-child(2){animation-delay:2s}
+.floater-tl{top:1.5rem;left:-1rem}
+.floater-br{bottom:2.5rem;right:-1rem;flex-direction:column;align-items:flex-start}
+@media(max-width:768px){.floater-tl{left:.5rem}.floater-br{right:.5rem}}
+.floater-dot{width:8px;height:8px;border-radius:50%;background:var(--sale);flex-shrink:0}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* emojis decorativos */
+.hero-emoji{
+  position:absolute;font-size:2rem;opacity:.25;
+  animation:float 5s ease-in-out infinite;
+  pointer-events:none;user-select:none;
+}
+
+/* scrolling pill bar */
+.scroll-bar{
+  overflow:hidden;background:var(--green);
+  padding:.75rem 0;margin-top:var(--sp12);
+}
+.scroll-track{
+  display:flex;gap:3rem;
+  animation:scroll-left 20s linear infinite;
+  width:max-content;
+}
+.scroll-item{
+  display:flex;align-items:center;gap:.75rem;
+  color:rgba(26,26,26,.75);font-size:.875rem;font-weight:600;white-space:nowrap;
+}
+.scroll-item strong{color:var(--dark)}
+.scroll-sep{color:var(--green-dark);font-size:1.2rem}
+@keyframes scroll-left{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* ─── PROVA SOCIAL ───────────────────────────────────── */
+.social-section{
+  padding:var(--sp24) 0;
+  background:#1A1A1A;color:#fff;
+  border-radius:2.5rem;
+  margin-inline:clamp(.75rem,2vw,2rem);
+  margin-block:var(--sp16);
+  overflow:hidden;
+  position:relative;
+}
+.social-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 80% 50%, rgba(169,217,0,.1), transparent);
+}
+
+.social-inner{position:relative;z-index:1;padding-inline:clamp(2rem,5vw,5rem)}
+
+.stat-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(1.5rem,4vw,4rem);
+  margin-bottom:var(--sp20);
+}
+@media(max-width:640px){.stat-row{grid-template-columns:1fr}}
+
+.stat-item{border-left:2px solid rgba(255,255,255,.1);padding-left:var(--sp6)}
+.stat-item:first-child{border-left:none;padding-left:0}
+@media(max-width:640px){.stat-item{border-left:none;padding-left:0;border-top:1px solid rgba(255,255,255,.1);padding-top:var(--sp5)}}
+.stat-num{font-size:clamp(2.5rem,5vw,4rem);font-weight:900;letter-spacing:-.04em;line-height:1}
+.stat-num span{color:var(--green)}
+.stat-desc{font-size:.9375rem;color:rgba(255,255,255,.5);margin-top:.25rem;line-height:1.5}
+
+/* depoimentos */
+.testimonials-label{margin-bottom:var(--sp10)}
+.testimonials-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp5);
+}
+@media(max-width:900px){.testimonials-grid{grid-template-columns:1fr}}
+@media(min-width:641px) and (max-width:900px){.testimonials-grid{grid-template-columns:repeat(2,1fr)}}
+
+.tcard{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:1.5rem;padding:var(--sp8);
+  transition:background var(--anim-fast), transform var(--anim-fast);
+}
+.tcard:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
+.tcard-stars{color:var(--rating);font-size:1rem;margin-bottom:var(--sp4);letter-spacing:.05em}
+.tcard-text{font-size:.9375rem;line-height:1.65;color:rgba(255,255,255,.8);margin-bottom:var(--sp6)}
+.tcard-text em{font-style:normal;color:var(--green);font-weight:600}
+.tcard-author{display:flex;align-items:center;gap:.75rem}
+.tcard-avatar{
+  width:2.5rem;height:2.5rem;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.875rem;color:#fff;flex-shrink:0;
+}
+.tcard-name{font-weight:700;font-size:.875rem}
+.tcard-meta{font-size:.75rem;color:rgba(255,255,255,.4)}
+
+/* ─── BENEFÍCIOS ─────────────────────────────────────── */
+.benefits-section{padding:var(--sp24) 0}
+.section-tag{margin-bottom:var(--sp6)}
+.section-title{
+  font-size:clamp(2rem,4vw,3.25rem);font-weight:900;
+  line-height:1.08;letter-spacing:-.03em;margin-bottom:var(--sp6);
+}
+.section-title em{font-style:normal;color:var(--green-dark)}
+.section-sub{font-size:1rem;color:rgba(26,26,26,.55);line-height:1.7;max-width:48ch;margin-bottom:var(--sp16)}
+
+.benefits-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp6);
+}
+@media(max-width:900px){.benefits-grid{grid-template-columns:1fr}}
+@media(min-width:641px) and (max-width:900px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
+
+.bcard{
+  background:#fff;border-radius:2rem;padding:var(--sp10) var(--sp8);
+  border:1px solid rgba(26,26,26,.07);
+  position:relative;overflow:hidden;
+  transition:transform var(--anim-primary), box-shadow var(--anim-primary);
+}
+.bcard:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(169,217,0,.2)}
+.bcard::before{
+  content:'';position:absolute;bottom:0;right:0;
+  width:8rem;height:8rem;border-radius:50%;
+  background:radial-gradient(circle,rgba(169,217,0,.15),transparent);
+  transform:translate(30%,30%);
+}
+.bcard-icon{font-size:2.5rem;margin-bottom:var(--sp6)}
+.bcard-title{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;margin-bottom:var(--sp3)}
+.bcard-desc{font-size:.9375rem;color:rgba(26,26,26,.6);line-height:1.65}
+.bcard-pill{
+  display:inline-flex;margin-top:var(--sp5);
+  padding:.3em .9em;border-radius:var(--rounded);
+  background:var(--green);color:var(--dark);
+  font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+}
+
+/* ─── MECANISMO ──────────────────────────────────────── */
+.mech-section{
+  padding:var(--sp24) 0;
+  background:var(--bg-soft);
+  border-radius:2.5rem;
+  margin-inline:clamp(.75rem,2vw,2rem);
+  margin-bottom:var(--sp16);
+  overflow:hidden;position:relative;
+}
+.mech-section::after{
+  content:'🌿';font-size:12rem;opacity:.05;
+  position:absolute;right:-2rem;bottom:-3rem;
+  pointer-events:none;user-select:none;line-height:1;
+}
+.mech-inner{padding-inline:clamp(2rem,5vw,5rem)}
+
+.mech-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(2rem,6vw,6rem);align-items:center;
+}
+@media(max-width:768px){.mech-layout{grid-template-columns:1fr}}
+
+.mech-step{
+  display:flex;gap:var(--sp5);
+  padding:var(--sp6) 0;
+  border-bottom:1px solid rgba(30,25,42,.1);
+  position:relative;
+}
+.mech-step:last-child{border-bottom:none}
+.mech-num{
+  width:2.5rem;height:2.5rem;border-radius:50%;
+  background:var(--green);color:var(--dark);
+  font-weight:900;font-size:1rem;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.mech-step-content{}
+.mech-step-title{font-weight:800;font-size:1.0625rem;margin-bottom:.35rem}
+.mech-step-desc{font-size:.9375rem;color:rgba(30,25,42,.6);line-height:1.6}
+
+/* ingrediente visual */
+.ingr-wrap{
+  background:#fff;border-radius:2rem;
+  padding:var(--sp10);display:flex;flex-direction:column;gap:var(--sp6);
+  box-shadow:0 8px 40px rgba(30,25,42,.08);
+}
+.ingr-title{font-size:1.125rem;font-weight:800;margin-bottom:var(--sp2)}
+.ingr-tag{display:inline-block;background:var(--green);color:var(--dark);
+  padding:.25em .75em;border-radius:var(--rounded);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--sp3)}
+.ingr-desc{font-size:.875rem;color:rgba(30,25,42,.6);line-height:1.6}
+.ingr-bar-wrap{margin-top:var(--sp3)}
+.ingr-bar-label{display:flex;justify-content:space-between;font-size:.75rem;font-weight:600;margin-bottom:.35rem}
+.ingr-bar{height:6px;background:rgba(30,25,42,.08);border-radius:var(--rounded);overflow:hidden}
+.ingr-bar-fill{height:100%;border-radius:var(--rounded);transition:width 1.2s cubic-bezier(.3,1,.3,1)}
+.ingr-divider{height:1px;background:rgba(30,25,42,.08)}
+
+/* ─── OBJEÇÕES ───────────────────────────────────────── */
+.obj-section{padding:var(--sp24) 0}
+.obj-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,6rem);align-items:start}
+@media(max-width:768px){.obj-layout{grid-template-columns:1fr}}
+
+.faq-item{
+  border-bottom:1px solid rgba(26,26,26,.1);
+  cursor:pointer;overflow:hidden;
+}
+.faq-q{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:var(--sp5) 0;font-weight:700;font-size:1rem;line-height:1.4;
+  user-select:none;gap:1rem;
+}
+.faq-icon{
+  width:1.75rem;height:1.75rem;border-radius:50%;
+  background:rgba(26,26,26,.06);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--anim-fast), transform var(--anim-fast);
+  font-size:.875rem;
+}
+.faq-item.open .faq-icon{background:var(--green);color:var(--dark);transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  font-size:.9375rem;color:rgba(26,26,26,.6);line-height:1.7;
+  transition:max-height var(--anim-primary), padding var(--anim-primary);
+}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:var(--sp5)}
+
+/* comparativo */
+.compare-card{
+  background:#1A1A1A;color:#fff;border-radius:2rem;padding:var(--sp10);
+}
+.compare-title{font-size:1.375rem;font-weight:800;margin-bottom:var(--sp8);letter-spacing:-.02em}
+.compare-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--sp4);
+  margin-bottom:var(--sp4);
+  padding-bottom:var(--sp4);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.compare-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.compare-label{font-size:.8125rem;color:rgba(255,255,255,.45);margin-bottom:.25rem}
+.compare-bad{color:rgba(255,255,255,.4);font-size:.9375rem;font-weight:600}
+.compare-good{color:var(--green);font-size:.9375rem;font-weight:700}
+.col-header{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:var(--sp5);
+  display:flex;align-items:center;gap:.5rem}
+.col-header span{padding:.2em .75em;border-radius:var(--rounded)}
+.col-header .old{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+.col-header .new{background:var(--green);color:var(--dark)}
+
+/* ─── CTA ────────────────────────────────────────────── */
+.cta-section{
+  padding:var(--sp24) 0 var(--sp32);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(169,217,0,.07), transparent);
+}
+
+.cta-inner{position:relative;z-index:1}
+
+.cta-title{
+  font-size:clamp(2.25rem,5vw,4rem);font-weight:900;
+  line-height:1.05;letter-spacing:-.035em;
+  margin-bottom:var(--sp5);
+}
+.cta-title em{font-style:normal;color:var(--green-dark)}
+.cta-sub{font-size:1.0625rem;color:rgba(26,26,26,.55);margin-bottom:var(--sp16);max-width:50ch;margin-inline:auto;line-height:1.6}
+
+/* pricing card */
+.pricing-wrap{
+  max-width:640px;margin-inline:auto;
+  background:#fff;border-radius:2.5rem;
+  border:2px solid rgba(26,26,26,.08);
+  padding:var(--sp12) var(--sp10);
+  box-shadow:0 20px 80px rgba(169,217,0,.15);
+  position:relative;
+}
+.pricing-badge{
+  position:absolute;top:-1rem;left:50%;transform:translateX(-50%);
+  white-space:nowrap;
+}
+.pricing-label{font-size:.875rem;color:rgba(26,26,26,.5);margin-bottom:.5rem}
+.pricing-val{
+  font-size:clamp(2.5rem,5vw,4rem);font-weight:900;
+  letter-spacing:-.04em;line-height:1;margin-bottom:.5rem;
+}
+.pricing-val sub{font-size:1.5rem;vertical-align:super;margin-right:.1em}
+.pricing-old{font-size:1rem;color:rgba(30,25,42,.35);text-decoration:line-through;margin-bottom:var(--sp8)}
+.pricing-features{
+  display:flex;flex-direction:column;gap:var(--sp3);
+  margin-bottom:var(--sp10);text-align:left;
+}
+.pricing-feat{display:flex;align-items:center;gap:.75rem;font-size:.9375rem}
+.feat-check{color:var(--success);font-size:1.1rem;flex-shrink:0}
+.pricing-cta{width:100%;padding:1.1rem;font-size:1.0625rem;margin-bottom:var(--sp5)}
+.pricing-guarantee{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.8125rem;color:rgba(26,26,26,.45);
+}
+.pricing-guarantee svg{color:var(--success)}
+
+/* colinha abaixo do pricing */
+.trust-row{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp8);
+  margin-top:var(--sp12);
+}
+.trust-item{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.875rem;color:rgba(26,26,26,.5);font-weight:500;
+}
+
+/* ─── FOOTER simples ─────────────────────────────────── */
+.footer{
+  padding:var(--sp8) clamp(1.25rem,4vw,3rem);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  border-top:1px solid rgba(26,26,26,.08);
+  font-size:.8125rem;color:rgba(26,26,26,.4);
+}
+.footer strong{color:var(--dark)}
+
+/* ─── RESPONSIVE misc ────────────────────────────────── */
+@media(max-width:640px){
+  .pricing-wrap{padding:var(--sp10) var(--sp6)}
+  .mech-inner,.social-inner{padding-inline:clamp(1.25rem,4vw,2rem)}
+  .ingr-wrap{margin-top:var(--sp8)}
+}
+</style>
+</head>
+<body>
+
+<!-- ──────────── NAV ──────────── -->
+<nav class="nav">
+  <a href="#" class="nav-logo">Ju<span>i</span></a>
+  <a href="#cta" class="nav-cta">Quero experimentar →</a>
+</nav>
+
+<!-- ──────────── SCROLL EXPAND HERO ──────────── -->
+<div id="sem-hero">
+  <!-- Spacer cria a área de scroll -->
+  <div class="sem-spacer" aria-hidden="true"></div>
+
+  <!-- Sticky viewport -->
+  <div class="sem-lock">
+
+    <!-- BG: banner WEBB do site real -->
+    <div class="sem-bg" id="semBg">
+      <img
+        src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/69bc102250d8dcf279772325_WEBB-p-1080.png"
+        srcset="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/69bc102250d8dcf279772325_WEBB-p-500.png 500w,
+                https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/69bc102250d8dcf279772325_WEBB-p-800.png 800w,
+                https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/69bc102250d8dcf279772325_WEBB-p-1080.png 1080w,
+                https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/69bc102250d8dcf279772325_WEBB-p-1600.png 1600w"
+        sizes="100vw"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+
+    <!-- Expanding media: produto Jui -->
+    <div class="sem-media-wrap" id="semMedia">
+      <img
+        src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-800.png"
+        srcset="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-500.png 500w,
+                https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-800.png 800w,
+                https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte.png 1350w"
+        sizes="(max-width:768px) 90vw, 50vw"
+        alt="Jui — Suco Verde Funcional"
+        loading="eager"
+      />
+      <div class="sem-media-overlay" id="semMediaOverlay"></div>
+    </div>
+
+    <!-- Split headline -->
+    <div class="sem-title" id="semTitle">
+      <span class="sem-word" id="semWord1">Seu intestino travado</span>
+      <span class="sem-word" id="semWord2">não é culpa <em>sua.</em></span>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="sem-scroll-hint" id="semHint">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      <span>role para ver</span>
+    </div>
+
+  </div><!-- /sem-lock -->
+</div><!-- /sem-hero -->
+
+<!-- ──────────── CONTEÚDO APÓS HERO ──────────── -->
+<div id="pageContent" class="sem-content" style="opacity:0">
+  <div class="hero">
+    <!-- copy -->
+    <div>
+      <div class="hero-label" data-reveal>
+        <span class="pill pill-green">🌱 Sem laxantes. Sem drama.</span>
+      </div>
+      <h1 data-reveal data-delay="1">
+        Seu intestino<br/>
+        travado não é<br/>
+        culpa <em>sua.</em>
+      </h1>
+      <p class="hero-sub" data-reveal data-delay="2">
+        Jui combina Psyllium e Inulina — as duas fibras que seu intestino estava pedindo — para funcionar de verdade, todo dia, sem efeito rebote.
+      </p>
+      <div class="hero-actions" data-reveal data-delay="3">
+        <a href="#cta" class="btn-primary"><span>Experimentar Jui agora</span> <span>→</span></a>
+        <button class="btn-ghost" onclick="document.getElementById('mecanismo').scrollIntoView({behavior:'smooth'})">Como funciona?</button>
+      </div>
+      <div class="hero-guarantee" data-reveal data-delay="4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Garantia de 30 dias. Funciona ou seu dinheiro de volta.</span>
+      </div>
+    </div>
+
+    <!-- visual -->
+    <div class="hero-visual" data-reveal data-delay="2">
+      <div class="hero-img-wrap" style="background:var(--bg-soft);padding:0;">
+        <!-- Imagem real do produto Jui Site -->
+        <img
+          src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-800.png"
+          srcset="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-500.png 500w, https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte-p-800.png 800w, https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/687034ac391d431a9d907047_Jui%20SIte.png 1350w"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          alt="Jui — Suco Verde Funcional"
+          style="width:100%;height:100%;object-fit:cover;border-radius:2rem;"
+        />
+        <!-- floaters -->
+        <div class="floater floater-tl">
+          <div class="floater-dot"></div>
+          <span>92% de satisfação</span>
+        </div>
+        <div class="floater floater-br">
+          <div style="font-size:.7rem;color:rgba(26,26,26,.5);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Resultado em</div>
+          <div style="font-size:1.125rem;font-weight:900;color:var(--dark);">7 dias</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- scroll infinito -->
+<div class="scroll-bar">
+  <div class="scroll-track" id="scrollTrack">
+    <span class="scroll-item"><strong>Psyllium + Inulina</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">💚 Sem laxantes</span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item"><strong>Resultado em 7 dias</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">🌿 100% Natural</span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item"><strong>Garantia 30 dias</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">✨ 92% de satisfação</span>
+    <span class="scroll-sep">·</span>
+    <!-- duplicado para loop -->
+    <span class="scroll-item"><strong>Psyllium + Inulina</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">💚 Sem laxantes</span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item"><strong>Resultado em 7 dias</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">🌿 100% Natural</span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item"><strong>Garantia 30 dias</strong></span>
+    <span class="scroll-sep">·</span>
+    <span class="scroll-item">✨ 92% de satisfação</span>
+  </div>
+</div>
+
+<!-- ──────────── PROVA SOCIAL ──────────── -->
+<div class="social-section" data-reveal>
+  <div class="social-inner">
+    <!-- stats -->
+    <div class="stat-row">
+      <div class="stat-item" data-reveal>
+        <div class="stat-num"><span>92</span>%</div>
+        <div class="stat-desc">das clientes relataram regularidade intestinal na primeira semana</div>
+      </div>
+      <div class="stat-item" data-reveal data-delay="1">
+        <div class="stat-num">+<span>12</span>k</div>
+        <div class="stat-desc">mulheres que abandonaram o laxante de vez</div>
+      </div>
+      <div class="stat-item" data-reveal data-delay="2">
+        <div class="stat-num"><span>4,9</span>★</div>
+        <div class="stat-desc">de avaliação média com mais de 3.200 reviews verificados</div>
+      </div>
+    </div>
+
+    <!-- testimonials e vídeos reais -->
+    <div class="testimonials-label" data-reveal>
+      <span class="pill" style="background:var(--green);color:var(--dark)">✨ O que estão falando</span>
+    </div>
+
+    <!-- Vídeos reais Wistia -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp5);margin-bottom:var(--sp8)" data-reveal>
+      <!-- Arianna -->
+      <div style="border-radius:1.25rem;overflow:hidden;aspect-ratio:9/16;background:#000;position:relative">
+        <img src="https://embed-ssl.wistia.com/deliveries/cf5e1bc48385efffc819a87b5ed5a4c2fbc0185b.jpg?image_crop_resized=360x640"
+             alt="Depoimento Arianna" style="width:100%;height:100%;object-fit:cover;opacity:.85"/>
+        <a href="https://fast.wistia.net/embed/iframe/xqf3pb3qcr" target="_blank" rel="noopener"
+           style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+            <svg viewBox="0 0 24 24" width="28" fill="var(--dark)"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div style="color:#fff;font-size:.75rem;font-weight:700;margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em">Arianna</div>
+        </a>
+      </div>
+      <!-- Mafe Ganem -->
+      <div style="border-radius:1.25rem;overflow:hidden;aspect-ratio:9/16;background:#000;position:relative">
+        <img src="https://embed-ssl.wistia.com/deliveries/43ef701c3ca9292436488056c5e8d38d66b95a50.jpg?image_crop_resized=576x1024"
+             alt="Depoimento Mafe Ganem" style="width:100%;height:100%;object-fit:cover;opacity:.85"/>
+        <a href="https://fast.wistia.net/embed/iframe/j0njv1nqzv" target="_blank" rel="noopener"
+           style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+            <svg viewBox="0 0 24 24" width="28" fill="var(--dark)"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div style="color:#fff;font-size:.75rem;font-weight:700;margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em">Mafe Ganem</div>
+        </a>
+      </div>
+      <!-- Aline Steffens -->
+      <div style="border-radius:1.25rem;overflow:hidden;aspect-ratio:9/16;background:#000;position:relative">
+        <img src="https://embed-ssl.wistia.com/deliveries/a5d92f2d7ef5b09ab13d04e7dc6630c4935fdb7b.jpg?image_crop_resized=576x1024"
+             alt="Depoimento Aline Steffens" style="width:100%;height:100%;object-fit:cover;opacity:.85"/>
+        <a href="https://fast.wistia.net/embed/iframe/5cuhilezyq" target="_blank" rel="noopener"
+           style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+            <svg viewBox="0 0 24 24" width="28" fill="var(--dark)"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div style="color:#fff;font-size:.75rem;font-weight:700;margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em">Aline Steffens</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Cards de texto -->
+    <div class="testimonials-grid">
+      <!-- Alicia -->
+      <div class="tcard" data-reveal>
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-text">"Maravilhoso!! Confesso que não estava esperando que fosse tão gostoso, principalmente por ser um suco verde. Além de ajudar com o <em>desinchaço</em> e ser super prático!"</p>
+        <div class="tcard-author">
+          <img src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/6870f7bc01332c1205684078_IMG_5505.jpg"
+               alt="Alicia" style="width:2.5rem;height:2.5rem;border-radius:50%;object-fit:cover;flex-shrink:0"/>
+          <div>
+            <div class="tcard-name">Alicia</div>
+            <div class="tcard-meta">@alicialinhares_ · Compra verificada ✓</div>
+          </div>
+        </div>
+      </div>
+      <!-- Beatriz -->
+      <div class="tcard" data-reveal data-delay="1">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-text">"<em>Portadora de SII</em> aqui! Ajuda muito nos dias de crise e com intestino. Faz mais de um ano que JUI faz parte da minha rotina 💚"</p>
+        <div class="tcard-author">
+          <img src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/6870f7baf8f292083593fcea_IMG_5504.jpg"
+               alt="Beatriz" style="width:2.5rem;height:2.5rem;border-radius:50%;object-fit:cover;flex-shrink:0"/>
+          <div>
+            <div class="tcard-name">Beatriz</div>
+            <div class="tcard-meta">@_bearamos · Compra verificada ✓</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard" data-reveal data-delay="2">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-text">"Totalmente apaixonada, se tornou meu momento conforto do dia! Alivia demais o <em>inchaço do dia a dia</em> e é prático demais 💞"</p>
+        <div class="tcard-author">
+          <img src="https://cdn.prod.website-files.com/685d56457e758e8feb5a83e3/6870f7ba1f785ad53919fb03_IMG_5507.jpg"
+               alt="Elisa" style="width:2.5rem;height:2.5rem;border-radius:50%;object-fit:cover;flex-shrink:0"/>
+          <div>
+            <div class="tcard-name">Elisa</div>
+            <div class="tcard-meta">@dailyelisaferrari · Compra verificada ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────── BENEFÍCIOS ──────────── -->
+<section class="benefits-section">
+  <div class="container">
+    <div class="section-tag" data-reveal>
+      <span class="pill pill-beige">O que muda com Jui</span>
+    </div>
+    <h2 class="section-title" data-reveal data-delay="1">
+      Três mudanças que você<br/>vai notar <em>logo na primeira semana.</em>
+    </h2>
+    <p class="section-sub" data-reveal data-delay="2">
+      Não é promessa vazia. São efeitos documentados das fibras certas, na dose certa, sem nada desnecessário.
+    </p>
+
+    <div class="benefits-grid">
+      <div class="bcard" data-reveal>
+        <div class="bcard-icon">🫃</div>
+        <div class="bcard-title">Adeus, inchaço abdominal</div>
+        <p class="bcard-desc">As fibras de Jui absorvem o excesso de água no cólon e reduzem o acúmulo de gás. Aquela barriga dura no fim do dia simplesmente vai embora.</p>
+        <span class="bcard-pill">Sentido em 3–5 dias</span>
+      </div>
+      <div class="bcard" data-reveal data-delay="1">
+        <div class="bcard-icon">⚡</div>
+        <div class="bcard-title">Zero cólicas</div>
+        <p class="bcard-desc">Sem estímulo artificial, sem contrações forçadas. Jui cria o ambiente certo para o peristaltismo funcionar naturalmente, sem dor.</p>
+        <span class="bcard-pill">Sem efeito rebote</span>
+      </div>
+      <div class="bcard" data-reveal data-delay="2">
+        <div class="bcard-icon">🗓️</div>
+        <div class="bcard-title">Regularidade de verdade</div>
+        <p class="bcard-desc">Não é ir hoje e travar amanhã. É ter um padrão. As fibras prebióticas alimentam a microbiota e estabelecem um ritmo intestinal estável.</p>
+        <span class="bcard-pill">Todo dia, sem esforço</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────── MECANISMO ──────────── -->
+<div class="mech-section" id="mecanismo">
+  <div class="mech-inner">
+    <div class="container" style="padding:0">
+      <div class="section-tag" style="margin-bottom:var(--sp6)" data-reveal>
+        <span class="pill pill-beige" style="background:rgba(30,25,42,.1)">Como funciona</span>
+      </div>
+      <h2 class="section-title" style="max-width:22ch" data-reveal data-delay="1">
+        Não é mágica. É a combinação <em>certa</em> de fibras.
+      </h2>
+
+      <div class="mech-layout">
+        <!-- steps -->
+        <div data-reveal data-delay="2">
+          <div class="mech-step">
+            <div class="mech-num">1</div>
+            <div class="mech-step-content">
+              <div class="mech-step-title">Psyllium hidrata e amolece</div>
+              <p class="mech-step-desc">Absorve água formando um gel que amolece as fezes e facilita o trânsito — sem urgência, sem dor.</p>
+            </div>
+          </div>
+          <div class="mech-step">
+            <div class="mech-num">2</div>
+            <div class="mech-step-content">
+              <div class="mech-step-title">Inulina alimenta sua microbiota</div>
+              <p class="mech-step-desc">Prebiótico que nutre as bactérias boas do cólon, restaurando o equilíbrio que faz o intestino funcionar sozinho.</p>
+            </div>
+          </div>
+          <div class="mech-step">
+            <div class="mech-num">3</div>
+            <div class="mech-step-content">
+              <div class="mech-step-title">Peristaltismo natural volta</div>
+              <p class="mech-step-desc">Com o ambiente saudável restaurado, o intestino retoma o ritmo sem depender de estímulos externos — laxantes viram passado.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ingredientes -->
+        <div class="ingr-wrap" data-reveal data-delay="3">
+          <div>
+            <div class="ingr-tag">Ingrediente 01</div>
+            <div class="ingr-title">Psyllium Husk</div>
+            <p class="ingr-desc">Fibra solúvel que forma gel no trato digestivo, regulando a velocidade do trânsito intestinal em ambas as direções.</p>
+            <div class="ingr-bar-wrap">
+              <div class="ingr-bar-label"><span>Absorção de água</span><span>95%</span></div>
+              <div class="ingr-bar"><div class="ingr-bar-fill js-bar" style="width:0%;background:linear-gradient(90deg,var(--green-dark),var(--green))" data-target="95"></div></div>
+            </div>
+          </div>
+          <div class="ingr-divider"></div>
+          <div>
+            <div class="ingr-tag" style="background:var(--sale);color:var(--dark)">Ingrediente 02</div>
+            <div class="ingr-title">Inulina (FOS)</div>
+            <p class="ingr-desc">Prebiótico de cadeia longa que estimula o crescimento de Bifidobacterium e Lactobacillus — a base da regulação intestinal duradoura.</p>
+            <div class="ingr-bar-wrap">
+              <div class="ingr-bar-label"><span>Ativação da microbiota</span><span>88%</span></div>
+              <div class="ingr-bar"><div class="ingr-bar-fill js-bar" style="width:0%;background:linear-gradient(90deg,var(--success),var(--green))" data-target="88"></div></div>
+            </div>
+          </div>
+        </div><!-- /.ingr-wrap -->
+      </div><!-- /.mech-layout -->
+    </div><!-- /.container -->
+  </div><!-- /.mech-inner -->
+</div><!-- /.mech-section -->
+
+<!-- ──────────── OBJEÇÕES ──────────── -->
+(function(){
+  const hero       = document.getElementById('sem-hero');
+  const bg         = document.getElementById('semBg');
+  const media      = document.getElementById('semMedia');
+  const overlay    = document.getElementById('semMediaOverlay');
+  const word1      = document.getElementById('semWord1');
+  const word2      = document.getElementById('semWord2');
+  const hint       = document.getElementById('semHint');
+  const nav        = document.querySelector('.nav');
+  const content    = document.getElementById('pageContent');
+
+  let progress  = 0;   // 0‥1
+  let expanded  = false;
+  let tStartY   = 0;
+  const isMobile = () => window.innerWidth < 768;
+
+  // Sizes (mirrors the React component)
+  const W0 = 300, H0 = 400;
+  const WD = () => isMobile() ? 650 : 1250;
+  const HD = () => isMobile() ? 200 : 400;
+
+  function applyProgress(p){
+    const w = W0 + p * WD();
+    const h = H0 + p * HD();
+    media.style.width  = Math.min(w, window.innerWidth * 0.97) + 'px';
+    media.style.height = Math.min(h, window.innerHeight * 0.94) + 'px';
+    media.style.borderRadius = (1 - p) * 20 + 'px';
+
+    // BG fade
+    bg.style.opacity = 1 - p;
+
+    // media overlay
+    overlay.style.opacity = Math.max(0.5 - p * 0.3, 0);
+
+    // title split
+    const tx = p * (isMobile() ? 40 : 60);
+    word1.style.transform = `translateX(-${tx}vw)`;
+    word2.style.transform = `translateX(${tx}vw)`;
+    word1.style.opacity   = 1 - p * 1.8;
+    word2.style.opacity   = 1 - p * 1.8;
+
+    // scroll hint
+    hint.style.opacity = 1 - p * 3;
+
+    // nav: solid after hero scrolled past
+    if(expanded){
+      nav.classList.add('nav-solid');
+    } else {
+      nav.classList.toggle('nav-solid', p > 0.05);
+    }
+
+    // reveal content
+    if(p >= 1 && !expanded){
+      expanded = true;
+      // unlock normal scroll
+      document.body.classList.remove('sem-noscroll');
+      content.style.transition = 'opacity .7s ease';
+      content.style.opacity = '1';
+    } else if(p < 1){
+      content.style.opacity = '0';
+    }
+  }
+
+  function addProgress(delta){
+    if(expanded) return;
+    progress = Math.min(Math.max(progress + delta, 0), 1);
+    applyProgress(progress);
+    if(progress < 1) window.scrollTo(0, 0); // keep scroll at top
+  }
+
+  // ── Wheel ──
+  function onWheel(e){
+    if(expanded && e.deltaY < 0 && window.scrollY <= 5){
+      // user scrolling back into hero
+      expanded = false;
+      document.body.classList.add('sem-noscroll');
+    } else if(!expanded){
+      e.preventDefault();
+      addProgress(e.deltaY * 0.0009);
+    }
+  }
+
+  // ── Touch ──
+  function onTouchStart(e){
+    tStartY = e.touches[0].clientY;
+  }
+  function onTouchMove(e){
+    if(!tStartY) return;
+    const dy = tStartY - e.touches[0].clientY;
+    if(expanded && dy < -20 && window.scrollY <= 5){
+      expanded = false;
+      document.body.classList.add('sem-noscroll');
+    } else if(!expanded){
+      e.preventDefault();
+      const factor = dy < 0 ? 0.008 : 0.005;
+      addProgress(dy * factor);
+      tStartY = e.touches[0].clientY;
+    }
+  }
+  function onTouchEnd(){ tStartY = 0; }
+
+  // Lock scroll while not expanded
+  document.body.classList.add('sem-noscroll');
+  const style = document.createElement('style');
+  style.textContent = 'body.sem-noscroll{overflow:hidden}';
+  document.head.appendChild(style);
+
+  // Initial paint
+  applyProgress(0);
+
+  window.addEventListener('wheel',      onWheel,      { passive: false });
+  window.addEventListener('touchstart', onTouchStart, { passive: true  });
+  window.addEventListener('touchmove',  onTouchMove,  { passive: false });
+  window.addEventListener('touchend',   onTouchEnd);
+  window.addEventListener('scroll', () => { if(!expanded) window.scrollTo(0,0); });
+
+  // ── Reveal on scroll (for sections below) ──
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold: 0.12});
+  document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
+  // ── FAQ ──
+  window.toggleFaq = function(id){
+    const item = document.getElementById(id);
+    if(!item) return;
+    item.classList.toggle('open');
+  };
+
+  // ── Ingredient bars ──
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.querySelectorAll('.js-bar').forEach(bar => {
+          bar.style.width = bar.dataset.target + '%';
+        });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.3});
+  document.querySelectorAll('.ingr-wrap').forEach(el => barObserver.observe(el));
+
+  // ── infinitely duplicate scroll track ──
+  const track = document.getElementById('scrollTrack');
+  if(track) track.innerHTML += track.innerHTML;
+
+})();
+</script>
+</body>
+</html>
+  <div class="container">
+    <div class="section-tag" data-reveal>
+      <span class="pill pill-beige">Suas dúvidas, respondidas</span>
+    </div>
+    <h2 class="section-title" data-reveal data-delay="1">
+      "Já tentei de tudo<br/>e nada funcionou."<br/>
+      <em>A gente sabe.</em>
+    </h2>
+
+    <div class="obj-layout">
+      <!-- FAQ -->
+      <div data-reveal data-delay="2">
+        <div class="faq-item" id="faq1">
+          <div class="faq-q" onclick="toggleFaq('faq1')">
+            <span>Por que Jui é diferente de outros produtos?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a">
+            Porque a maioria usa apenas uma fibra ou usa doses insuficientes. Jui combina Psyllium (efeito imediato) com Inulina (efeito duradouro) na proporção ideal para trabalhar em duas frentes ao mesmo tempo.
+          </div>
+        </div>
+        <div class="faq-item" id="faq2">
+          <div class="faq-q" onclick="toggleFaq('faq2')">
+            <span>Quanto tempo leva para ver resultado?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a">
+            A maioria das clientes percebe melhora no inchaço em 3–5 dias e regularidade consistente em 7–10 dias. Para benefícios na microbiota (longo prazo), recomendamos 30 dias contínuos.
+          </div>
+        </div>
+        <div class="faq-item" id="faq3">
+          <div class="faq-q" onclick="toggleFaq('faq3')">
+            <span>Posso usar se já tomo remédio para o intestino?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a">
+            Jui é um suplemento de fibras alimentares, não medicamento. Tem interação mínima com remédios, mas sempre recomendamos consultar seu médico se você faz uso contínuo de laxantes ou loperamida.
+          </div>
+        </div>
+        <div class="faq-item" id="faq4">
+          <div class="faq-q" onclick="toggleFaq('faq4')">
+            <span>E se eu não gostar ou não funcionar?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a">
+            Você tem 30 dias de garantia total. Se não funcionar — por qualquer motivo — devolvemos 100% do valor sem perguntas.
+          </div>
+        </div>
+        <div class="faq-item" id="faq5">
+          <div class="faq-q" onclick="toggleFaq('faq5')">
+            <span>Como tomar Jui?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a">
+            Uma medida dissolvida em 200ml de água ou suco, uma vez ao dia. Recomendamos no período da manhã. Aumente a ingestão de água ao longo do dia para potencializar o efeito.
+          </div>
+        </div>
+      </div>
+
+      <!-- comparativo -->
+      <div class="compare-card" data-reveal data-delay="3">
+        <div class="compare-title">Laxante vs. Jui</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp4);margin-bottom:var(--sp5)">
+          <div class="col-header"><span class="old">Laxante</span></div>
+          <div class="col-header"><span class="new">Jui</span></div>
+        </div>
+        <div class="compare-row">
+          <div><div class="compare-label">Tempo de ação</div><div class="compare-bad">Horas, imprevisível</div></div>
+          <div><div class="compare-label">Tempo de ação</div><div class="compare-good">3–5 dias (duradouro)</div></div>
+        </div>
+        <div class="compare-row">
+          <div><div class="compare-label">Efeito rebote</div><div class="compare-bad">Sim, piora com o tempo</div></div>
+          <div><div class="compare-label">Efeito rebote</div><div class="compare-good">Não. Restaura o ritmo</div></div>
+        </div>
+        <div class="compare-row">
+          <div><div class="compare-label">Cólicas</div><div class="compare-bad">Frequentes</div></div>
+          <div><div class="compare-label">Cólicas</div><div class="compare-good">Nenhuma</div></div>
+        </div>
+        <div class="compare-row">
+          <div><div class="compare-label">Microbiota</div><div class="compare-bad">Prejudica com uso contínuo</div></div>
+          <div><div class="compare-label">Microbiota</div><div class="compare-good">Nutre e fortalece</div></div>
+        </div>
+        <div class="compare-row">
+          <div><div class="compare-label">Dependência</div><div class="compare-bad">Alta</div></div>
+          <div><div class="compare-label">Dependência</div><div class="compare-good">Zero</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────── CTA ──────────── -->
+<section class="cta-section" id="cta">
+  <div class="container cta-inner">
+    <div class="section-tag" style="justify-content:center;display:flex" data-reveal>
+      <span class="pill pill-green">🌱 Comece hoje</span>
+    </div>
+    <h2 class="cta-title" data-reveal data-delay="1">
+      Seu intestino funcionando<br/>de verdade. <em>Todo dia.</em>
+    </h2>
+    <p class="cta-sub" data-reveal data-delay="2">
+      Sem laxante, sem cólica, sem travar. O próximo passo é simples: experimentar.
+    </p>
+
+    <div class="pricing-wrap" data-reveal data-delay="3">
+      <div class="pricing-badge">
+        <span class="pill pill-green">✓ Mais popular</span>
+      </div>
+
+      <div class="pricing-label">Jui — Caixa 30 doses</div>
+      <div class="pricing-val"><sub>R$</sub>89<span style="font-size:2rem">,90</span></div>
+      <div class="pricing-old">De R$ 149,90 — economia de R$ 60,00</div>
+
+      <div class="pricing-features">
+        <div class="pricing-feat"><span class="feat-check">✓</span><span>30 doses de Psyllium + Inulina na dose ideal</span></div>
+        <div class="pricing-feat"><span class="feat-check">✓</span><span>Resultado visível em até 7 dias</span></div>
+        <div class="pricing-feat"><span class="feat-check">✓</span><span>Sem sabor artificial, sem glúten, sem lactose</span></div>
+        <div class="pricing-feat"><span class="feat-check">✓</span><span>Frete grátis para todo o Brasil</span></div>
+        <div class="pricing-feat"><span class="feat-check">✓</span><span>Garantia de 30 dias — 100% do dinheiro de volta</span></div>
+      </div>
+
+      <a href="#" class="btn-primary pricing-cta" style="font-size:1.0625rem;font-weight:800;">
+        <span>Experimentar Jui agora →</span>
+      </a>
+
+      <div class="pricing-guarantee">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Garantia incondicional de 30 dias</span>
+      </div>
+    </div>
+
+    <div class="trust-row" data-reveal data-delay="4">
+      <div class="trust-item">🔒 Pagamento 100% seguro</div>
+      <div class="trust-item">🚚 Frete grátis</div>
+      <div class="trust-item">⚡ Entrega em 3–5 dias úteis</div>
+      <div class="trust-item">🌿 92% de satisfação</div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────── FOOTER ──────────── -->
+<footer class="footer">
+  <div><strong>Jui</strong> — Cuidando do seu intestino de verdade.</div>
+  <div>© 2025 · Todos os direitos reservados</div>
+</footer>
+
+<!-- ──────────── JS ──────────── -->
+<script>
+// Reveal on scroll
+const reveals = document.querySelectorAll('[data-reveal]');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+},{threshold:.12});
+reveals.forEach(el=>observer.observe(el));
+
+// Animar barras dos ingredientes
+const bars = document.querySelectorAll('.js-bar');
+const barObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      setTimeout(()=>{ e.target.style.width = e.target.dataset.target+'%'; },300);
+      barObserver.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+bars.forEach(b=>barObserver.observe(b));
+
+// FAQ toggle
+function toggleFaq(id){
+  const item = document.getElementById(id);
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+
+// Botão hover arrow
+document.querySelectorAll('.btn-primary').forEach(btn=>{
+  // já tratado por CSS
+});
+</script>
+</body>
+</html>
